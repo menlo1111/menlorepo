@@ -5,21 +5,21 @@ pipeline
     agent any
     stages
     {
-       stage('ContinuousDownload_master')
+       stage('ContinuousDownload_credit')
        {
            steps
            {
               git 'https://github.com/selenium-saikrishna/maven.git' 
            }
        }
-        stage('ContinuousBuild_master')
+        stage('ContinuousBuild_credit')
        {
            steps
            {
              sh 'mvn package'
            }
        }
-         stage('ContinuousDeployment_master')
+         stage('ContinuousDeployment_credit')
        {
            steps
            {
