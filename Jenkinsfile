@@ -1,28 +1,29 @@
-node('master')
-{
-    stage('ContinuousDownload') 
-    {
-         git 'https://github.com/selenium-saikrishna/maven.git'
-    }
-    stage('ContinuousBuild') 
-    {
-         sh label: '', script: 'mvn package'
-    }
-    stage('ContinuousDeployment')
-    {
-        sh label: '', script: 'scp /home/ubuntu/.jenkins/workspace/ScriptedPipeline/webapp/target/webapp.war ubuntu@172.31.12.49:/var/lib/tomcat8/webapps/testenv.war'
-    }
-    stage('ContinuousTesting')
-    {
-        git 'https://github.com/selenium-saikrishna/FunctionalTesting.git'
-        sh label: '', script: 'java -jar /home/ubuntu/.jenkins/workspace/ScriptedPipeline/testing.jar'
-    }
-     stage('ContinuousDelivery')
-    {
-        input message: 'Waiting for Approval from the DM', submitter: 'Srinivas'
-        sh label: '', script: 'scp /home/ubuntu/.jenkins/workspace/ScriptedPipeline/webapp/target/webapp.war ubuntu@172.31.13.206:/var/lib/tomcat8/webapps/prodenv.war'
-    }
-    
-    
-}
 
+
+pipeline
+{
+    agent any
+    stages
+    {
+       stage('ContinuousDownload_master')
+       {
+           steps
+           {
+              git 'https://github.com/selenium-saikrishna/maven.git' 
+           }
+       }
+        stage('ContinuousBuild_master')
+       {
+           steps
+           {
+             sh 'mvn package'
+           }
+       }
+         stage('ContinuousDeployment_master')
+       {
+           steps
+           {
+      deploy adapters: [tomcat9(credentialsId: 'da16f60f-4542-4db8-99dc-81bfb6d72719', path: '', url: 'http://172.31.83.121:8080')], contextPath: 'testapp', war: '**/*.war'
+           }
+   
+}
